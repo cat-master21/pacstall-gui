@@ -1,2 +1,2 @@
-THEME=Adwaita:dark
+THEME=Adwaita:light
 KEEPTMP=false
