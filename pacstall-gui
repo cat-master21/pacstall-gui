@@ -54,7 +54,7 @@ sed -i '/FALSE/d' ./install-packages
 sed -i 's/|//g' ./install-packages && sed -i 's/TRUE//g' ./install-packages
 sed -i ':a;N;$!ba;s/\n/ /g' ./install-packages
 
-pkexec ./pacstall-patched -PI $(cat ./install-packages) | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | yad --form --field="Detailed view":TXT --text="Installing $(cat ./install-packages)..." --title="Installing $(cat ./install-packages) pacscripts" --scroll --cycle-read --button=Abort/End:1 --text="You can close this window once all pacscripts are installed. You can tell by INFO: Cleaning Up." --on-top --width="300" --height="300"
+pkexec $TMP/pacstall-patched -PI $(cat $TMP/install-packages) | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | yad --form --field="Detailed view":TXT --text="Installing $(cat $TMP/install-packages)..." --title="Installing $(cat $TMP/install-packages) pacscripts" --scroll --cycle-read --button=Abort/End:1 --text="You can close this window once all pacscripts are installed. You can tell by INFO: Cleaning Up." --on-top --width="300" --height="300"
 fi
 
 if [[ "$KEEPTMP" == false ]]
