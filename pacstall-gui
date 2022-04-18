@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 function search() {
-	if yad --entry --text=Search --on-top --ricon=find > ./search.txt
+	if GTK_THEME=$THEME yad --entry --text=Search --on-top --ricon=find > ./search.txt
 	then
 		pacstall -S $(cat ./search.txt) > tmpfile && mv -f tmpfile search.txt
 		sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" ./search.txt | tr -dc '[[:print:]]\n' > search-formatted.txt
@@ -24,7 +24,7 @@ export -f search
 
 function settings() {
 source "/usr/lib/pacstall-gui/settings.sh"
-if yad --form --field="Theme (currently is $(echo "$THEME" | sed 's/\<Adwaita\>//g' | sed 's/[:]//g')):":CB 'light!dark' --separator='\n' --field="Keep TMP (currently is $(echo "$KEEPTMP"))":CB 'false!true' > ./setting-noformat.txt
+if GTK_THEME=$THEME yad --form --field="Theme (currently is $(echo "$THEME" | sed 's/\<Adwaita\>//g' | sed 's/[:]//g')):":CB 'light!dark' --separator='\n' --field="Keep TMP (currently is $(echo "$KEEPTMP"))":CB 'false!true' > ./setting-noformat.txt
 then
 	sed -i '/light/s/^/THEME=Adwaita:/' ./setting-noformat.txt | sed -i '/dark/s/^/THEME=Adwaita:/' ./setting-noformat.txt
 	sed -i '/false/s/^/KEEPTMP=/' ./setting-noformat.txt | sed -i '/true/s/^/KEEPTMP=/' ./setting-noformat.txt
@@ -54,7 +54,7 @@ sed -i '/FALSE/d' ./install-packages
 sed -i 's/|//g' ./install-packages && sed -i 's/TRUE//g' ./install-packages
 sed -i ':a;N;$!ba;s/\n/ /g' ./install-packages
 
-pkexec $TMP/pacstall-patched -PI $(cat $TMP/install-packages) | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | yad --form --field="Detailed view":TXT --text="Installing $(cat $TMP/install-packages)..." --title="Installing $(cat $TMP/install-packages) pacscripts" --scroll --cycle-read --button=Abort/End:1 --text="You can close this window once all pacscripts are installed. You can tell by INFO: Cleaning Up." --on-top --width="300" --height="300"
+pkexec $TMP/pacstall-patched -PI $(cat $TMP/install-packages) | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | GTK_THEME=$THEME yad --form --field="Detailed view":TXT --text="Installing $(cat $TMP/install-packages)..." --title="Installing $(cat $TMP/install-packages) pacscripts" --scroll --cycle-read --button=Abort/End:1 --text="You can close this window once all pacscripts are installed. You can tell by INFO: Cleaning Up." --on-top --width="300" --height="300"
 fi
 
 if [[ "$KEEPTMP" == false ]]
