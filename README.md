@@ -1,0 +1,2 @@
+# pacstall-gui
+ 
