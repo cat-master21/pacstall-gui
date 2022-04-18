@@ -28,7 +28,7 @@ if yad --form --field="Theme (currently is $(echo "$THEME" | sed 's/\<Adwaita\>/
 then
 	sed -i '/light/s/^/THEME=Adwaita:/' ./setting-noformat.txt | sed -i '/dark/s/^/THEME=Adwaita:/' ./setting-noformat.txt
 	sed -i '/false/s/^/KEEPTMP=/' ./setting-noformat.txt | sed -i '/true/s/^/KEEPTMP=/' ./setting-noformat.txt
-	sudo mv -f ./setting-noformat.txt "/usr/lib/pacstall-gui/settings.sh"
+	mv -f ./setting-noformat.txt "/usr/lib/pacstall-gui/settings.sh"
 else
 	rm -rf "./setting-noformat.txt"
 fi

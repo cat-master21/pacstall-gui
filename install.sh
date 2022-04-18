@@ -7,3 +7,4 @@ sudo wget -q https://github.com/cat-master21/pacstall-gui/raw/master/disable-roo
 
 sudo wget -q --show-progress --progress=bar:force -O "/usr/bin/pacstall-gui" "https://github.com/cat-master21/pacstall-gui/raw/master/pacstall-gui"
 sudo chmod +x "/usr/bin/pacstall-gui"
+sudo chmod -R a+w /usr/lib/pacstall-gui
