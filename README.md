@@ -10,8 +10,10 @@ First you've got to have Pacstall installed, then
 - [x] Themes (light/dark)
 - [x] View installation
 - [x] gtk3
-- [] pacscript details
-- [] remove/list pacscripts
+### what needs to be done
+- settings saving bug
+- pacscript details
+- remove/list pacscripts
 
 ## Screenshots
 ![Ubuntu dark theme](/images/Ubuntu-dark-theme.webp)
