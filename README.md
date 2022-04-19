@@ -1,9 +1,18 @@
 # experimental pacstall-gui
- 
- You can test by `wget -q https://github.com/cat-master21/pacstall-gui/raw/master/install.sh && chmod +x ./install.sh && ./install.sh && rm -rf ./install.sh`
-and it should work!
+A gui for [Pacstall](https://pacstall.dev) package manager.
+
+## Installation
+First you've got to have Pacstall installed, then
+`pacstall -I pacstall-gui-git` to install.
+
+## Features
+- [x] Install packages
+- [x] Themes (light/dark)
+- [x] View installation
+- [x] gtk3
+- [] pacscript details
+- [] remove/list pacscripts
 
 ## Screenshots
-
 ![Ubuntu dark theme](/images/Ubuntu-dark-theme.webp)
 ![Ubuntu light theme](/images/Ubuntu-light-theme.webp)
