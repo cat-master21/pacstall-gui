@@ -1,5 +1,4 @@
-# experimental pacstall-gui
-A gui for [Pacstall](https://pacstall.dev) package manager.
+#A gui for [Pacstall](https://pacstall.dev) package manager.
 
 ## Installation
 First you've got to have Pacstall installed, then
