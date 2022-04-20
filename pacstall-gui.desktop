@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Pacstall-gui frontend
+GenericName=Package Manager
+Comment=GUI pacstall software packages
+Exec=pacstall-gui
+Icon=system-software-install
+Terminal=false
+Type=Application
+Categories=PackageManager;GTK;System;Settings;
+StartupNotify=true
+StartupWMClass=pacstall-gui
