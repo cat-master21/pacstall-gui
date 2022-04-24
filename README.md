@@ -18,6 +18,6 @@ First you've got to have Pacstall installed, then
 - notifications
 
 ## Screenshots
+(Slightly outdated)
 ![Ubuntu dark theme](/images/Ubuntu-dark-theme.webp)
 ![Ubuntu light theme](/images/Ubuntu-light-theme.webp)
-(Slightly outdated)
