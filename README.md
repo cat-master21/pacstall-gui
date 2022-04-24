@@ -10,10 +10,14 @@ First you've got to have Pacstall installed, then
 - [x] View installation
 - [x] gtk3
 - [x] remove/list pacscripts
-### what needs to be done
+### What it can't do (yet)
 - pacscript details
-- custom prompts
+- custom prompts (remove make depends after install, etc)
+- update pacscripts
+- update pacstall
+- notifications
 
 ## Screenshots
 ![Ubuntu dark theme](/images/Ubuntu-dark-theme.webp)
 ![Ubuntu light theme](/images/Ubuntu-light-theme.webp)
+(Slightly outdated)
