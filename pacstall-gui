@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+
+export TMP="$(mktemp -d "/tmp/pacstall-gui-XXX")"
 function search() {
 	if GTK_THEME=$THEME yad --entry --text=Search --on-top --ricon=find > ./search.txt
 	then
@@ -17,7 +19,7 @@ function search() {
 
 	else
 		rm -rf "./search-formatted.txt" "./search.txt"
-		return 252 #exit code for closed window
+		return 1
 fi
 }
 export -f search
@@ -32,23 +34,43 @@ then
 else
 	rm -rf "./setting-noformat.txt"
 fi
-#in case settings are changed... same for beginning
 source "/usr/lib/pacstall-gui/settings.sh"
 }
 export -f settings
 
+function list() {
+source "/usr/lib/pacstall-gui/settings.sh"
+pacstall -L > ./installed
+
+echo "$(awk '{print "0 "$0}' ./installed)" > ./installed
+sed -i ':a;N;$!ba;s/\n/ /g' ./installed
+sed -ri 's/.{50}//' ./installed
+
+if GTK_THEME=$THEME yad --list --column="Remove":CHK --print-all --multiple --column="Package Name":TXT $(cat ./installed) --title="currently installed pacscripts" --button=Remove:0 --buttons-layout=center --dclick-action="true" > ./remove;
+then
+
+sed -i '/FALSE/d' ./remove
+sed -i 's/|//g' ./remove && sed -i 's/TRUE//g' ./remove
+sed -i ':a;N;$!ba;s/\n/ /g' ./remove
+
+pkexec $TMP/pacstall-patched -PR $(cat $TMP/remove) | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | GTK_THEME=$THEME yad --form --field="Detailed view":TXT --text="Removing $(cat $TMP/remove)..." --title="Removing $(cat $TMP/remove) pacscripts" --scroll --cycle-read --button=Abort/End:1 --text="You can close this window once all pacscripts are removed. You can tell by INFO: Package removed successfully." --on-top --width="300" --height="300"
+fi
+rm -rf ./installed ./remove
+}
+export -f list
+
 source "/usr/lib/pacstall-gui/settings.sh"
 
-TMP="$(mktemp -d "/tmp/pacstall-gui-XXX")"
 cd "$TMP" || exit 1
 
 wget -q "$(cat /usr/share/pacstall/repo/pacstallrepo.txt)/packagelist"
 echo "$(awk '{print "0 "$0}' ./packagelist)" > ./packagelist
 sed -i ':a;N;$!ba;s/\n/ /g' ./packagelist
+
 cp "/usr/bin/pacstall" ./pacstall-patched
 patch ./pacstall-patched /usr/lib/pacstall-gui/disable-root-check.diff > /dev/null
 
-if GTK_THEME=$THEME yad --list --column="Install":CHK --print-all --multiple --column="Package Name":TXT $(cat ./packagelist) --title="package list" --button=Install:0 --buttons-layout=start --center --dclick-action="true" --multiple --button=Search:"bash -c search" --button=Settings:"bash -c settings" --window-icon=system-software-install > ./install-packages; then
+if GTK_THEME=$THEME yad --list --column="Install":CHK --print-all --multiple --column="Package Name":TXT $(cat ./packagelist) --title="package list" --button=Install:0 --buttons-layout=start --center --dclick-action="true" --multiple --button=Search:"bash -c search" --button=Settings:"bash -c settings" --button="List installed Pacscripts":"bash -c list" --window-icon=system-software-install > ./install-packages; then
 
 sed -i '/FALSE/d' ./install-packages
 sed -i 's/|//g' ./install-packages && sed -i 's/TRUE//g' ./install-packages
