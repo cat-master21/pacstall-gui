@@ -3,6 +3,7 @@
 
 export TMP="$(mktemp -d "/tmp/pacstall-gui-XXX")"
 function search() {
+	source "/usr/lib/pacstall-gui/settings.sh"
 	if GTK_THEME=$THEME yad --entry --text=Search --on-top --ricon=find > ./search.txt
 	then
 		pacstall -S $(cat ./search.txt) > tmpfile && mv -f tmpfile search.txt
