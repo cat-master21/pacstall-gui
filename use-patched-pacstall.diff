@@ -1,0 +1,13 @@
+diff --git a/misc/scripts/upgrade.sh b/misc/scripts/upgrade.sh
+index 4a088b8..98dcfe4 100755
+--- a/misc/scripts/upgrade.sh
++++ b/misc/scripts/upgrade.sh
+@@ -32,7 +32,7 @@ function ver_compare() {
+ export UPGRADE="yes"
+ 
+ # Get the list of the installed packages
+-mapfile -t list < <(pacstall -L)
++mapfile -t list < <($TMP/pacstall -L)
+ rm -f /tmp/pacstall-up-list
+ rm -f /tmp/pacstall-up-print
+ rm -f /tmp/pacstall-up-urls
