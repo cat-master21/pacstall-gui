@@ -21,4 +21,4 @@ First you've got to have Pacstall installed, then
 ## Screenshots
 (Slightly outdated)
 ![Ubuntu dark theme](/images/Ubuntu-dark-theme.webp)
-![Ubuntu light theme](/imag
+![Ubuntu light theme](/images/Ubuntu-light-theme.webp)
