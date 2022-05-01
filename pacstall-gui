@@ -62,17 +62,6 @@ rm -rf ./installed ./remove
 }
 export -f list
 
-function update() {
-source "/usr/lib/pacstall-gui/settings.sh"
-
-patch ./pacstall-patched /usr/lib/pacstall-gui/change-update-path.diff > /dev/null
-cp "/usr/share/pacstall/scripts/upgrade.sh" ./upgrade.sh
-patch ./upgrade.sh /usr/lib/pacstall-gui/use-patched-pacstall.diff > /dev/null
-
-pkexec "$TMP"/pacstall-patched -Pup | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | GTK_THEME=$THEME yad --form --field="Detailed view":TXT --text="Updating pacscripts..." --title="Updating Pacscripts" --scroll --cycle-read --button=Abort/End:1 --text="You can close this window once all pacscripts are Updated." --on-top --width="300" --height="300"
-}
-export -f update
-
 source "/usr/lib/pacstall-gui/settings.sh"
 
 cd "$TMP" || exit 1
@@ -84,7 +73,7 @@ sed -i ':a;N;$!ba;s/\n/ /g' ./packagelist
 cp "/usr/bin/pacstall" ./pacstall-patched
 patch ./pacstall-patched /usr/lib/pacstall-gui/disable-root-check.diff > /dev/null
 
-if GTK_THEME=$THEME yad --list --column="Install":CHK --print-all --multiple --column="Package Name":TXT $(cat ./packagelist) --title="package list" --button=Install:0 --buttons-layout=start --center --dclick-action="true" --multiple --button=Search:"bash -c search" --button=Settings:"bash -c settings" --button="Installed Pacscripts":"bash -c list" --button="Update pacscripts":"bash -c update" --window-icon=system-software-install > ./install-packages; then
+if GTK_THEME=$THEME yad --list --column="Install":CHK --print-all --multiple --column="Package Name":TXT $(cat ./packagelist) --title="package list" --button=Install:0 --buttons-layout=start --center --dclick-action="true" --multiple --button=Search:"bash -c search" --button=Settings:"bash -c settings" --button="List installed Pacscripts":"bash -c list" --window-icon=system-software-install > ./install-packages; then
 
 sed -i '/FALSE/d' ./install-packages
 sed -i 's/|//g' ./install-packages && sed -i 's/TRUE//g' ./install-packages
