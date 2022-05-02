@@ -43,7 +43,7 @@ export -f settings
 
 function list() {
 source "/usr/lib/pacstall-gui/settings.sh"
-pacstall -L > ./installed
+./pacstall-patched -L > ./installed
 
 echo "$(awk '{print "0 "$0}' ./installed)" > ./installed
 sed -i ':a;N;$!ba;s/\n/ /g' ./installed
@@ -70,6 +70,7 @@ wget -q "$(cat /usr/share/pacstall/repo/pacstallrepo.txt)/packagelist"
 printf "$(awk '{print "0 "$0}' ./packagelist)" > ./packagelist
 sed -i ':a;N;$!ba;s/\n/ /g' ./packagelist
 sed '/# Error out when run as root/,+5 d' /usr/bin/pacstall > ./pacstall-patched
+chmod +x ./pacstall-patched
 
 if GTK_THEME=$THEME yad --list --column="Install":CHK --print-all --multiple --column="Package Name":TXT $(cat ./packagelist) --title="package list" --button=Install:0 --buttons-layout=start --center --dclick-action="true" --multiple --button=Search:"bash -c search" --button=Settings:"bash -c settings" --button="List installed Pacscripts":"bash -c list" --window-icon=system-software-install > ./install-packages; then
 
