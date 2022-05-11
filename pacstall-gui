@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
-
-export TMP="$(mktemp -d "/tmp/pacstall-gui-XXX")"
+TMP="$(mktemp -d "/tmp/pacstall-gui-XXX")"
+export TMP
 function search() {
 	source "/usr/lib/pacstall-gui/settings.sh"
 	if GTK_THEME=$THEME yad --entry --text=Search --on-top --ricon=find > ./search.txt
@@ -62,6 +62,11 @@ rm -rf ./installed ./remove
 }
 export -f list
 
+function about() {
+yad --about --copyright=2022 --pname=pacstall-gui --pversion=$(date -I) --website='https://github.com/cat-master21/pacstall-gui' --website-label='https://github.com/cat-master21/pacstall-gui' --authors=cat-master21 --comments='pacstall-gui is a frontend for Pacstall' --on-top --splash --icon=preferences-other
+}
+export -f about
+
 source "/usr/lib/pacstall-gui/settings.sh"
 
 cd "$TMP" || exit 1
@@ -72,7 +77,7 @@ sed -i ':a;N;$!ba;s/\n/ /g' ./packagelist
 sed '/# Error out when run as root/,+5 d' /usr/bin/pacstall > ./pacstall-patched
 chmod +x ./pacstall-patched
 
-if GTK_THEME=$THEME yad --list --column="Install":CHK --print-all --multiple --column="Package Name":TXT $(cat ./packagelist) --title="package list" --button=Install:0 --buttons-layout=start --center --dclick-action="true" --multiple --button=Search:"bash -c search" --button=Settings:"bash -c settings" --button="List installed Pacscripts":"bash -c list" --window-icon=system-software-install > ./install-packages; then
+if GTK_THEME=$THEME yad --list --column="Install":CHK --print-all --multiple --column="Package Name":TXT $(cat ./packagelist) --title="package list" --button=Install:0 --buttons-layout=start --center --dclick-action="true" --multiple --button=Search:"bash -c search" --button=Settings:"bash -c settings" --button="List installed Pacscripts":"bash -c list" --button="About pacstall-gui":"bash -c about" --window-icon=system-software-install > ./install-packages; then
 
 sed -i '/FALSE/d' ./install-packages
 sed -i 's/|//g' ./install-packages && sed -i 's/TRUE//g' ./install-packages
