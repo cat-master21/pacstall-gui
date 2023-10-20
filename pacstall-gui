@@ -2,8 +2,26 @@
 
 TMP="$(mktemp -d "/tmp/pacstall-gui-XXX")"
 export TMP
+
+if ! [ -f "$HOME/.config/pacstall-gui/settings.sh" ]; then
+mkdir -p $HOME/.config/pacstall-gui
+echo -e "THEME=Adwaita:light
+KEEPTMP=false" > $HOME/.config/pacstall-gui/settings.sh
+fi
+
+source "$HOME/.config/pacstall-gui/settings.sh"
+
+function trap_ctrlc() {
+echo "The program has been interrupted, exiting"
+if [[ "$KEEPTMP" == false ]]
+then
+rm -rf "$TMP"
+fi
+}
+trap "trap_ctrlc" 2
+
 function search() {
-	source "/usr/lib/pacstall-gui/settings.sh"
+	source "$HOME/.config/pacstall-gui/settings.sh"
 	if GTK_THEME=$THEME yad --entry --text=Search --on-top --ricon=find > ./search.txt
 	then
 		pacstall -S $(cat ./search.txt) > tmpfile
@@ -27,29 +45,31 @@ fi
 }
 export -f search
 
+
 function settings() {
-source "/usr/lib/pacstall-gui/settings.sh"
+source "$HOME/.config/pacstall-gui/settings.sh"
 if GTK_THEME=$THEME yad --form --field="Theme (currently is $(echo "$THEME" | sed 's/\<Adwaita\>//g' | sed 's/[:]//g')):":CB 'light!dark' --separator='\n' --field="Keep TMP (currently is $(echo "$KEEPTMP"))":CB 'false!true' > ./setting-noformat.txt
 then
 	sed -i '1s/^/THEME=Adwaita:/' ./setting-noformat.txt
 	sed -i '2s/^/KEEPTMP=/' ./setting-noformat.txt
-	mv -f ./setting-noformat.txt "/usr/lib/pacstall-gui/settings.sh"
+	mv -f ./setting-noformat.txt "$HOME/.config/pacstall-gui/settings.sh"
 else
 	rm -rf "./setting-noformat.txt"
 fi
-source "/usr/lib/pacstall-gui/settings.sh"
+source "$HOME/.config/pacstall-gui/settings.sh"
 }
 export -f settings
 
+
 function list() {
-source "/usr/lib/pacstall-gui/settings.sh"
-./pacstall-patched -L > ./installed
+source "$HOME/.config/pacstall-gui/settings.sh"
+./pacstall -L > ./installed
 
 echo "$(awk '{print "0 "$0}' ./installed)" > ./installed
 sed -i ':a;N;$!ba;s/\n/ /g' ./installed
 sed -ri 's/.{50}//' ./installed
 
-if GTK_THEME=$THEME yad --list --column="Remove":CHK --print-all --multiple --column="Package Name":TXT $(cat ./installed) --title="currently installed pacscripts" --button=Remove:0 --buttons-layout=center --dclick-action="true" > ./remove;
+if GTK_THEME=$THEME yad --list --column="Remove":CHK --print-all --multiple --column="Package Name":TXT 0 $(cat ./installed) --title="currently installed pacscripts" --button=Remove:0 --buttons-layout=center --dclick-action="true" > ./remove;
 then
 
 sed -i '/FALSE/d' ./remove
@@ -62,19 +82,20 @@ rm -rf ./installed ./remove
 }
 export -f list
 
+
 function about() {
-yad --about --copyright=2022 --pname=pacstall-gui --pversion=$(date -I) --website='https://github.com/cat-master21/pacstall-gui' --website-label='https://github.com/cat-master21/pacstall-gui' --authors=cat-master21 --comments='pacstall-gui is a frontend for Pacstall' --on-top --splash --icon=preferences-other
+yad --about --copyright=2023 --pname=pacstall-gui --pversion=$(date -I) --website='https://github.com/cat-master21/pacstall-gui' --website-label='https://github.com/cat-master21/pacstall-gui' --authors=cat-master21 --comments='pacstall-gui is a frontend for Pacstall' --on-top --splash --icon=desktop
 }
 export -f about
 
-source "/usr/lib/pacstall-gui/settings.sh"
 
 cd "$TMP" || exit 1
 
-wget -q "$(cat /usr/share/pacstall/repo/pacstallrepo.txt)/packagelist"
+wget -q "$(cat /usr/share/pacstall/repo/pacstallrepo)/packagelist"
 printf "$(awk '{print "0 "$0}' ./packagelist)" > ./packagelist
 sed -i ':a;N;$!ba;s/\n/ /g' ./packagelist
 sed '/# Error out when run as root/,+5 d' /usr/bin/pacstall > ./pacstall-patched
+sed -i 's!axel -ao!axel -qao!' ./pacstall-patched
 chmod +x ./pacstall-patched
 
 if GTK_THEME=$THEME yad --list --column="Install":CHK --print-all --multiple --column="Package Name":TXT $(cat ./packagelist) --title="package list" --button=Install:0 --buttons-layout=start --center --dclick-action="true" --multiple --button=Search:"bash -c search" --button=Settings:"bash -c settings" --button="Installed":"bash -c list" --button="About pacstall-gui":"bash -c about" --window-icon=system-software-install > ./install-packages; then
@@ -83,7 +104,7 @@ sed -i '/FALSE/d' ./install-packages
 sed -i 's/|//g' ./install-packages && sed -i 's/TRUE//g' ./install-packages
 sed -i ':a;N;$!ba;s/\n/ /g' ./install-packages
 
-pkexec $TMP/pacstall-patched -PI $(cat $TMP/install-packages) | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | GTK_THEME=$THEME yad --form --field="Detailed view":TXT --text="Installing $(cat $TMP/install-packages)..." --title="Installing $(cat $TMP/install-packages) pacscripts" --scroll --cycle-read --button=Abort/End:1 --text="You can close this window once all pacscripts are installed. You can tell by INFO: Cleaning Up." --on-top --width="300" --height="300"
+pkexec $TMP/pacstall-patched --disable-prompts -I $(cat $TMP/install-packages) | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | GTK_THEME=$THEME yad --form --field="Detailed view":TXT --text="Installing $(cat $TMP/install-packages)..." --title="Installing Pacscripts" --scroll --cycle-read --button=Abort/End:1 --text="You can close this window once all pacscripts are installed." --on-top --width="300" --height="300"
 fi
 
 if [[ "$KEEPTMP" == false ]]
