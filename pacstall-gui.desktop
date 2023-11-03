@@ -1,9 +1,10 @@
 [Desktop Entry]
+Version=1.0
 Name=Pacstall-gui frontend
 GenericName=Package Manager
 Comment=GUI pacstall software packages
 Exec=pacstall-gui
-TryExec=/usr/src/pacstall/pacstall-gui-git/usr/bin/pacstall-gui
+TryExec=/usr/bin/pacstall-gui
 Icon=system-software-install
 Terminal=false
 Type=Application
