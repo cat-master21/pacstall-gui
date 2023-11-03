@@ -63,13 +63,13 @@ export -f settings
 
 function list() {
 source "$HOME/.config/pacstall-gui/settings.sh"
-./pacstall -L > ./installed
+pacstall -L > ./installed
 
 echo "$(awk '{print "0 "$0}' ./installed)" > ./installed
 sed -i ':a;N;$!ba;s/\n/ /g' ./installed
 sed -ri 's/.{50}//' ./installed
 
-if GTK_THEME=$THEME yad --list --column="Remove":CHK --print-all --multiple --column="Package Name":TXT 0 $(cat ./installed) --title="currently installed pacscripts" --button=Remove:0 --buttons-layout=center --dclick-action="true" > ./remove;
+if GTK_THEME=$THEME yad --list --column="Remove":CHK --print-all --multiple --column="Package Name":TXT $(cat ./installed) --title="currently installed pacscripts" --button=Remove:0 --buttons-layout=center --dclick-action="true" > ./remove;
 then
 
 sed -i '/FALSE/d' ./remove
